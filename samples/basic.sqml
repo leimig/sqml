@@ -1,0 +1,10 @@
+User {
+    id: uuid(),
+    name: firstname()
+} * 20;
+
+Job {
+    trackingNumber: sequence('tn'),
+    startDate: range(now(-7), now()),
+    // requester: from User where (name = "Higgor")
+} * 500;

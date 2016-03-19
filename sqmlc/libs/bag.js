@@ -6,7 +6,17 @@ function Bag() {
 }
 
 Bag.prototype.get = function(name, args) {
-    var value = this[name].apply(this, args);
+    var argsv = [];
+
+    args.forEach(function(arg, index) {
+        if (typeof arg === 'object') {
+            argsv[index] = this.get(arg.name, arg.args);
+        } else {
+            argsv[index] = arg;
+        }
+    }.bind(this));
+
+    var value = this[name].apply(this, argsv);
 
     // Prepares strings to be inserted into the SQL
     if (typeof value === 'string') {
@@ -35,24 +45,16 @@ Bag.prototype.date = function() {
 };
 
 Bag.prototype.relativeDate = function(days, months, years, hours, minutes, seconds) {
-    days    = days    || 0; // default value
-    months  = months  || 0; // default value
-    years   = years   || 0; // default value
-    hours   = hours   || 0; // default value
-    minutes = minutes || 0; // default value
-    seconds = seconds || 0; // default value
+    var date = moment();
 
-    var date = new Date();
+    date.add(days    || 0, 'd');
+    date.add(months  || 0, 'M');
+    date.add(years   || 0, 'y');
+    date.add(hours   || 0, 'h');
+    date.add(minutes || 0, 'm');
+    date.add(seconds || 0, 's');
 
-    date.setDate(date.getDate() + days);
-    date.setMonth(date.getMonth() + months);
-    date.setFullYear(date.getFullYear() + years);
-
-    date.setHours(date.getHours() + hours);
-    date.setMinutes(date.getMinutes() + minutes);
-    date.setSeconds(date.getSeconds() + seconds);
-
-    return moment(date).format(DATE_FORMAT);
+    return date.toISOString();
 };
 
 module.exports = new Bag();

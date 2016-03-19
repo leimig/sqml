@@ -7,6 +7,6 @@ var filename = args[0];
 var source = fs.readFileSync(filename, { encoding: 'utf8' });
 
 var tokens = new Lexer().exec(source);
-var descriptiors = new Parser().exec(tokens);
+var descriptors = new Parser().exec(tokens);
 
-console.log(descriptiors);
+console.log(descriptors);

@@ -35,7 +35,7 @@ Lexer.prototype.exec = function(source) {
 
         // Check for reserved symbols
         if (token = Tokens.get(str)) {
-            ret.push({ token: token });
+            ret.push({ type: token });
             continue;
         }
 
@@ -48,7 +48,7 @@ Lexer.prototype.exec = function(source) {
                 content += str;
 
             ret.push({
-                token: Tokens.STRING,
+                type: Tokens.STRING,
                 value: content
             });
 
@@ -62,7 +62,7 @@ Lexer.prototype.exec = function(source) {
                 identifier += (str = next());
 
             ret.push({
-                token: Tokens.IDENTIFIER,
+                type: Tokens.IDENTIFIER,
                 value: identifier
             });
 
@@ -76,7 +76,7 @@ Lexer.prototype.exec = function(source) {
                 digit += (str = next());
 
             ret.push({
-                token: Tokens.DIGIT,
+                type: Tokens.DIGIT,
                 value: digit
             });
 
@@ -84,7 +84,8 @@ Lexer.prototype.exec = function(source) {
         }
 
         // TODO: Improve this error message with line and column instead of index
-        console.log('Unexpected character ' + str + ' at position ' + pos);
+        throw Error('Unexpected character ' + str + ' at position ' + pos);
+        return;
     }
 
     return ret;

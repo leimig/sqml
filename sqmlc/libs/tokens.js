@@ -22,5 +22,15 @@ module.exports = {
             case ':': return this.COLON;
             case ';': return this.SEMICOLON;
         }
+    },
+
+    isDataType: function(token) {
+        switch (token) {
+            case this.DIGIT:
+            case this.STRING:
+                return true;
+            default:
+                return false;
+        }
     }
 }

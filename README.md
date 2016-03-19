@@ -6,7 +6,7 @@
 
 Generating SQLs with SQML is extremely easy, you just need to create a .sqml file and define how the data on your table will look like.
 
-You can write how many descriptors you want in your .sqml files. Each descriptor is defined with following syntax
+You can write how many descriptors you want in your .sqml files. Each descriptor is defined with following the syntax
 
 ```
 <table_name> {
@@ -16,7 +16,9 @@ You can write how many descriptors you want in your .sqml files. Each descriptor
 } [* quantity];
 ```
 
-where `value` can be any of the supported basic data (`number` or `string`) or one of the helper methods. While `quantity` is an `integer` and, surprisingly, represents the amount of records that will be created for that table. `quantity` is an optional field, if you do not define it, it will have the default value `1`.
+where `value` can be any of the supported basic data (`number` or `string`) or one of the helper methods. While `quantity` is an `integer` and, surprisingly, represents the amount of records that will be created for that table.
+
+> `quantity` is an optional field, if you do not define it, it will have the default value `1`.
 
 Let's see an example
 
@@ -38,8 +40,20 @@ INSERT INTO User (id, name, age) VALUES
 ('50cb8ff2-ee15-11e5-b578-654ad19c5815', 'Foo Bar', 20);
 ```
 
-
 > Note that SQML **only generates INSERT queries**. We assume that you already have your database configured.
+
+## Compiling your SQML
+To compile you SQML into SQL, you just need to execute the following command
+
+```sh
+./sqmlc.sh ./samples/basic.sqml ./samples/basic.out.sql
+```
+
+or just call the node module directly
+
+```sh
+node ./sqmlc/sqmlc.js ./samples/basic.sqml ./samples/basic.out.sql
+```
 
 ## Helper Methods
 ### uuid([version='v1'])

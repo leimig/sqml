@@ -1,1 +1,1 @@
-node ./sqmlc/sqmlc.js $1
+node ./sqmlc/sqmlc.js $1 $2

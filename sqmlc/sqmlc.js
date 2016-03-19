@@ -4,11 +4,20 @@ var fs        = require('fs'),
     Assembler = require('./libs/assembler'),
     args      = process.argv.slice(2);
 
-var filename = args[0];
-var source   = fs.readFileSync(filename, { encoding: 'utf8' });
+var source   = args[0];
+var target   = args[1];
 
-var tokens      = new Lexer().exec(source);
+console.log('Reading input file ' + source);
+var input    = fs.readFileSync(source, { encoding: 'utf8' });
+
+console.log('Starting compilation...');
+var tokens      = new Lexer().exec(input);
 var descriptors = new Parser().exec(tokens);
+
+console.log('Assembling queries...');
 var queries     = new Assembler().exec(descriptors);
 
-console.log(queries);
+console.log('Writing result data into ' + target);
+fs.writeFileSync(target, queries.join('\n'), { encoding: 'utf8' });
+
+console.log('All done!');

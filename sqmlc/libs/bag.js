@@ -30,8 +30,9 @@ Bag.prototype.uuid = function(version) {
     return uuid[version || 'v1']();
 };
 
-Bag.prototype.sequence = function(id, startAt) {
-    this.sequences[id] = this.sequences[id] || startAt;
+Bag.prototype.sequence = function(id, startsAt) {
+    startsAt = startsAt === void 0 ? 0 : startsAt;
+    this.sequences[id] = this.sequences[id] || startsAt;
     return this.sequences[id]++;
 };
 

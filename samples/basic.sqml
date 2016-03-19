@@ -1,9 +1,8 @@
 User {
     id: uuid(),
-    name: 'Higgor Leimig',
-    age: 20,
-    birthday: date()
-};
+    name: 'Foo Bar',
+    age: random(18, 24)
+} * 4;
 
 Job {
     trackingNumber: sequence('tn', 1),
@@ -11,4 +10,4 @@ Job {
     endDate: date('20150325'),
     startDate: relativeDate(random(0, 6)),
     // requester: from User where (name = "Higgor")
-} * 100;
+} * 10;

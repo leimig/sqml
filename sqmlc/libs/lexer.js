@@ -77,7 +77,7 @@ Lexer.prototype.exec = function(source) {
 
             ret.push({
                 type: Tokens.DIGIT,
-                value: digit
+                value: parseFloat(digit)
             });
 
             continue;

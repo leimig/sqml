@@ -18,7 +18,9 @@ Parser.prototype.exec = function(tokens) {
     }
 
     validate = function(actual, expected) {
-        if (actual.type !== expected)
+        if (!actual)
+            throwMissingToken(expected);
+        else if(actual.type !== expected)
             throwUnexpectedToken(token);
     }
 
@@ -55,8 +57,12 @@ Parser.prototype.exec = function(tokens) {
         return method;
     }
 
+    throwMissingToken = function(token) {
+        throw Error('Missing token ' + token);
+    }
+
     throwUnexpectedToken = function(token) {
-        throw Error('Unexpected token of type ' + token.type);
+        throw Error('Unexpected token of type ' + token.type + ' ' + token.value);
     }
 
     while (pos < tokens.length) {
@@ -95,10 +101,17 @@ Parser.prototype.exec = function(tokens) {
             validate(token = next(), Tokens.RBRACKETS);
 
             // Check for a quantity limit
-            if (peek() === Tokens.TIMES) {
-                next(); // discart times
-                descriptor.quantity = next();
+            if (peek().type === Tokens.TIMES) {
+                next(); // discart times symbol
+
+                // Check for brackets
+                validate(token = next(), Tokens.DIGIT);
+
+                descriptor.quantity = parseInt(token.value);
             }
+
+            // Check for brackets
+            validate(token = next(), Tokens.SEMICOLON);
 
             ret.push(descriptor);
         }

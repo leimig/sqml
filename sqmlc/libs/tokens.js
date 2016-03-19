@@ -9,5 +9,18 @@ module.exports = {
     LPARENS:    "LPARENS",
     COMMA:      "COMMA",
     COLON:      "COLON",
-    SEMICOLON:  "SEMICOLON"
+    SEMICOLON:  "SEMICOLON",
+
+    get: function(str) {
+        switch (str) {
+            case '*': return this.TIMES;
+            case '{': return this.LBRACKETS;
+            case '}': return this.RBRACKETS;
+            case '(': return this.LPARENS;
+            case ')': return this.RPARENS;
+            case ',': return this.COMMA;
+            case ':': return this.COLON;
+            case ';': return this.SEMICOLON;
+        }
+    }
 }

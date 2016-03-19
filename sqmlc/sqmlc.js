@@ -7,6 +7,16 @@ var fs        = require('fs'),
 var source   = args[0];
 var target   = args[1];
 
+if (!source) {
+    console.log('ERROR: missing input file!');
+    process.exit(-1);
+}
+
+if (!target) {
+    console.log('ERROR: missing output file!');
+    process.exit(-2);
+}
+
 console.log('Reading input file ' + source);
 var input    = fs.readFileSync(source, { encoding: 'utf8' });
 
@@ -16,6 +26,11 @@ var descriptors = new Parser().exec(tokens);
 
 console.log('Assembling queries...');
 var queries     = new Assembler().exec(descriptors);
+
+// TODO: Transactions
+// var data  = "BEGIN TRANSACTION;\n";
+//     data += queries.join('\n');
+//     data += "\nCOMMIT;"
 
 console.log('Writing result data into ' + target);
 fs.writeFileSync(target, queries.join('\n'), { encoding: 'utf8' });

@@ -27,7 +27,7 @@ Bag.prototype.get = function(name, args) {
 }
 
 Bag.prototype.uuid = function(version) {
-    return uuid[version || 'v4']();
+    return uuid[version || 'v1']();
 };
 
 Bag.prototype.sequence = function(id, startAt) {

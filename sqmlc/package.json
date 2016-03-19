@@ -1,0 +1,24 @@
+{
+  "name": "sqmlc",
+  "version": "1.0.0",
+  "description": "SQML Compiler",
+  "main": "sqmlc.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sundered/sqml.git"
+  },
+  "keywords": [
+    "SQML",
+    "SQL",
+    "Compiler"
+  ],
+  "author": "Higgor Leimig",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sundered/sqml/issues"
+  },
+  "homepage": "https://github.com/sundered/sqml#readme"
+}

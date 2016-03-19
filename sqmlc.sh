@@ -1,0 +1,1 @@
+node ./sqmlc/sqmlc.js $1

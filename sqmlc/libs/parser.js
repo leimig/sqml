@@ -46,7 +46,9 @@ Parser.prototype.exec = function(tokens) {
         validate(next(), Tokens.LPARENS);
 
         while (peek().type !== Tokens.RPARENS) {
-            if (arg = parseArgument(next())) {
+            var arg = parseArgument(next())
+            // Ignores only undefined and nulls
+            if (arg !== null && arg !== void 0) {
                 method.args.push(arg);
             }
         }
@@ -108,6 +110,9 @@ Parser.prototype.exec = function(tokens) {
                 validate(token = next(), Tokens.DIGIT);
 
                 descriptor.quantity = parseInt(token.value);
+            } else {
+                // Default quantity value
+                descriptor.quantity = 1;
             }
 
             // Check for brackets

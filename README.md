@@ -1,4 +1,4 @@
-# SQML - Standart Query Markup Language
+# SQML - Standard Query Markup Language
 
 *SQML* is a Markup Languagem that helps you generate meaningful data to your database. It reads a .sqml file and outputs your data in ANSI SQL.
 

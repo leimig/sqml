@@ -1,4 +1,4 @@
-var Bag = require('./bag');
+var Helper = require('./helper');
 
 // Assembler definition
 function Assembler() {
@@ -30,7 +30,7 @@ Assembler.prototype.exec = function(descriptors) {
 
             descriptor.properties.forEach(function(property) {
                 if (typeof property.value === 'object') {
-                    values += Bag.get(property.value.name, property.value.args);
+                    values += Helper.get(property.value.name, property.value.args);
 
                 } else if (typeof property.value === 'string') {
                     values += "'" + property.value + "'";

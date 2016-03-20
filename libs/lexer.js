@@ -44,8 +44,14 @@ Lexer.prototype.exec = function(source) {
             var delimiter = str;
             var content = "";
 
-            while ((str = next()) !== delimiter)
+            // Looks for all the characters inside de string
+            while ((str = next()) !== delimiter) {
+                if (str === '\\') {
+                    str += next();
+                }
+
                 content += str;
+            }
 
             ret.push({
                 type: Tokens.STRING,

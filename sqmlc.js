@@ -18,7 +18,7 @@ if (!target) {
 }
 
 console.log('Reading input file ' + source);
-var input    = fs.readFileSync(source, { encoding: 'utf8' });
+var input = fs.readFileSync(source, { encoding: 'utf8' });
 
 console.log('Starting compilation...');
 var tokens      = new Lexer().exec(input);

@@ -1,6 +1,6 @@
 User {
     id: uuid(),
-    name: 'Foo Bar',
+    name: 'Foo" \' Bar',
     age: random(18, 24)
 } * 4;
 

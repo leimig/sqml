@@ -38,13 +38,20 @@ Lexer.prototype.exec = function(source) {
             if ((str = next()) === '/') {
                 // Found it. Now, let's ignore the rest of the line
                 while ((str = next()) != '\n');
+                column = 0;
+                line++;
+
                 continue;
             }
         }
 
         // Check for reserved symbols
         if (token = Tokens.get(str)) {
-            ret.push({ type: token });
+            ret.push({
+                type: token,
+                line: line,
+                column: column
+            });
             continue;
         }
 
@@ -64,7 +71,11 @@ Lexer.prototype.exec = function(source) {
 
             ret.push({
                 type: Tokens.STRING,
-                value: content
+                value: content,
+                line: line,
+                // subtracting the length and adding the quotes
+                // will mark the begining of the string
+                column: column - (content.length - 1 + 2 /* for the quotes*/)
             });
 
             continue;
@@ -78,7 +89,10 @@ Lexer.prototype.exec = function(source) {
 
             ret.push({
                 type: Tokens.IDENTIFIER,
-                value: identifier
+                value: identifier,
+                line: line,
+                // subtracting the length will mark the begining of the identifier
+                column: column - (identifier.length - 1)
             });
 
             continue;
@@ -92,13 +106,16 @@ Lexer.prototype.exec = function(source) {
 
             ret.push({
                 type: Tokens.DIGIT,
-                value: parseFloat(digit)
+                value: parseFloat(digit),
+                line: line,
+                // subtracting the length will mark the begining of the number
+                column: column - (digit.length - 1)
             });
 
             continue;
         }
 
-        throw Error('Unexpected character ' + str + ' at ' + line + ':' + column);
+        throw SyntaxError('Unexpected character `' + str + '` at ' + line + ':' + column);
     }
 
     return ret;

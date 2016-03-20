@@ -18,9 +18,7 @@ Parser.prototype.exec = function(tokens) {
     }
 
     validate = function(actual, expected) {
-        if (!actual)
-            throwMissingToken(expected);
-        else if(actual.type !== expected)
+        if(actual.type !== expected)
             throwUnexpectedToken(token);
     }
 
@@ -59,12 +57,13 @@ Parser.prototype.exec = function(tokens) {
         return method;
     }
 
-    throwMissingToken = function(token) {
-        throw Error('Missing token ' + token);
-    }
-
     throwUnexpectedToken = function(token) {
-        throw Error('Unexpected token of type ' + token.type + ' ' + token.value);
+        if (token.value)
+            errorMessage = 'Unexpected token `' + token.value + '`';
+        else
+            errorMessage = 'Unexpected token of type ' + token.type;
+
+        throw Error(errorMessage + ' at ' + token.line + ':' + token.column);
     }
 
     while (pos < tokens.length) {
@@ -115,11 +114,14 @@ Parser.prototype.exec = function(tokens) {
                 descriptor.quantity = 1;
             }
 
-            // Check for brackets
+            // Check for semicolon
             validate(token = next(), Tokens.SEMICOLON);
 
             ret.push(descriptor);
+            continue;
         }
+
+        throwUnexpectedToken(token);
     }
 
     return ret;

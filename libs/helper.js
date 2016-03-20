@@ -29,7 +29,12 @@ Helper.prototype.get = function(name, args) {
         }
     }.bind(this));
 
-    var value = this[name].apply(this, argsv);
+    var value;
+    if (this[name]) {
+        value = this[name].apply(this, argsv);
+    } else {
+        throw ReferenceError("Unknown helper method called `" + name + "`");
+    }
 
     // Prepares strings to be inserted into the SQL
     if (typeof value === 'string') {

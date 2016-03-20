@@ -37,7 +37,7 @@ try {
     fs.writeFileSync(target, queries.join('\n'), { encoding: 'utf8' });
 
 } catch (e) {
-    console.log('ERROR: ' + e.message);
+    console.log(e);
     process.exit(-1);
 }
 

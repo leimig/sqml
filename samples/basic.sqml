@@ -2,7 +2,7 @@ User {
     id: uuid(),
     name: 'Foo" \' Bar',
     age: random(18, 24)
-} * 4;
+} * 20;
 
 Job {
     trackingNumber: sequence('tn', 1),

@@ -8,8 +8,11 @@ function Lexer() {
 Lexer.prototype.exec = function(source) {
     var ret = [];
     var pos = 0;
+    var line = 1;
+    var column = 0;
 
     next = function() {
+        column++;
         return source[pos++];
     }
 
@@ -21,8 +24,14 @@ Lexer.prototype.exec = function(source) {
     while (pos < source.length) {
         var str = next();
 
-        if (/[\n\r\t ]/i.test(str))
+        if (/[\n\r\t ]/i.test(str)) {
+            if (str === '\n') {
+                column = 0;
+                line++;
+            }
+
             continue; // if whitespace/line break/tab
+        }
 
         // Looks for an inline comment
         if (str === '/') {
@@ -89,9 +98,7 @@ Lexer.prototype.exec = function(source) {
             continue;
         }
 
-        // TODO: Improve this error message with line and column instead of index
-        throw Error('Unexpected character ' + str + ' at position ' + pos);
-        return;
+        throw Error('Unexpected character ' + str + ' at ' + line + ':' + column);
     }
 
     return ret;

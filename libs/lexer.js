@@ -67,6 +67,10 @@ Lexer.prototype.exec = function(source) {
                 }
 
                 content += str;
+
+                // Validates if there is an unfinished string
+                if (!str || /[\n\r]/i.test(content))
+                    throw SyntaxError('Unfinished string at ' + line + ':' + column);
             }
 
             ret.push({

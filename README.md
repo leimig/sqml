@@ -89,6 +89,29 @@ relativeDate(1,0,-1)
 ```
 will return the date 03/20/2015
 
+### fullName([gender])
+
+Combines `firstName` with `lastName` and returns a first name and a last name separated by a space. Accepts the name gender, for more detail look at `firstName` documentation.
+
+```javascript
+fullName('F')
+```
+
+### firstName([gender])
+
+Returns a random first name. The parameter `gender` defines the expected gender or the name. It can be either `M` or `F`, any other value will return names from both genders.
+
+```javascript
+firstName('M')
+```
+
+### lastName()
+
+Returns a random last name.
+
+```javascript
+lastName()
+```
 
 ## Author
 SQML is a project made by Higgor Leimig.

@@ -37,10 +37,12 @@ Lexer.prototype.exec = function(source) {
         if (str === '/') {
             if ((str = next()) === '/') {
                 // Found it. Now, let's ignore the rest of the line
-                while ((str = next()) != '\n');
-                column = 0;
-                line++;
+                while (str = next()) {
+                    if (str === '\n') break;
+                }
 
+                line++;
+                column = 0;
                 continue;
             }
         }
@@ -52,6 +54,7 @@ Lexer.prototype.exec = function(source) {
                 line: line,
                 column: column
             });
+
             continue;
         }
 

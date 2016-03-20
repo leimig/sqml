@@ -7,6 +7,27 @@ var moment = require('moment');
  */
 function Helper() {
     this.sequences = {};
+    this.names = {};
+
+    this.names.male = [
+        'William', 'Ernest', 'Emery', 'Jayson', 'Bob', 'Jeromy',
+        'Augustus', 'Fermin', 'Mose', 'Pablo', 'Leonardo', 'Jeremiah',
+        'Simon', 'Wilem', 'Tim', 'Tom', 'Cody', 'Adam'
+    ];
+  
+    this.names.female = [
+        'Adelle', 'Alycia', 'Cathryn', 'Shay', 'Beverly', 'Londa',
+        'Kathryne', 'Ila', 'Mary', 'Carol', 'Ana', 'Amanda',
+        'Maryrose', 'Lily', 'Robin', 'Auri', 'Fela', 'Mola'
+    ];
+
+    this.names.last = [
+        'Smith', 'Brown', 'Johnson', 'Williams', 'Jones',
+        'Davis', 'Miller', 'Wilson', 'Taylor', 'Clark',
+        'Lewis', 'Harris', 'Thomas', 'Martin', 'Hall'
+    ];
+
+    this.names.both = this.names.male.concat(this.names.female);
 }
 
 /**
@@ -122,6 +143,44 @@ Helper.prototype.relativeDate = function(days, months, years, hours, minutes, se
     date.add(seconds || 0, 's');
 
     return date.toISOString();
+};
+
+/**
+ * Combines `firstName` with `lastName`
+ *
+ * @param  {String} gender look `firstName` documentation
+ * @return {String}        a first name and a last name separated by a space
+ */
+Helper.prototype.fullName = function(gender) {
+    return this.firstName(gender) + ' ' + this.lastName();
+};
+
+/**
+ * Returns a random first name based on the provided gender
+ *
+ * @param  {String} gender defines the expected gender or the name. It can be either
+ *                         `M` or `F`, any other value will return names from both genders.
+ * @return {String}
+ */
+Helper.prototype.firstName = function(gender) {
+    if (gender === 'M') {
+        return this.names.male[this.random(0, this.names.male.length-1)];
+
+    } else if (gender === 'F') {
+        return this.names.female[this.random(0, this.names.female.length-1)];
+
+    } else {
+        return this.names.both[this.random(0, this.names.both.length-1)];
+    }
+};
+
+/**
+ * Returns a random last name
+ *
+ * @return {String}
+ */
+Helper.prototype.lastName = function() {
+    return this.names.last[this.random(0, this.names.last.length-1)];
 };
 
 module.exports = new Helper();

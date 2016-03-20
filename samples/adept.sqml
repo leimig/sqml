@@ -1,0 +1,12 @@
+User {
+    id:          sequence('user_id', 1),
+    firstname:   firstname(),
+    lastname:    lastname(),
+    age:         random(18, 24)
+}*20;
+
+// Job {
+//     trackingNumber: sequence('tn', 1),
+//     createdDate:    date(),
+//     requester:      `select id from User where id = ? AND (firstname = 'Higgor' OR age > 20)` [random(1,20)]
+// } * 10;

@@ -46,13 +46,7 @@ INSERT INTO User (id, name, age) VALUES
 To compile you SQML into SQL, you just need to execute the following command
 
 ```sh
-./sqmlc.sh ./samples/basic.sqml ./samples/basic.out.sql
-```
-
-or just call the node module directly
-
-```sh
-node ./sqmlc/sqmlc.js ./samples/basic.sqml ./samples/basic.out.sql
+node sqmlc.js ./samples/basic.sqml ./samples/basic.out.sql
 ```
 
 ## Helper Methods

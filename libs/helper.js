@@ -41,6 +41,7 @@ function Helper() {
  */
 Helper.prototype.get = function(name, args) {
     var argsv = [];
+    args = args || [];
 
     args.forEach(function(arg, index) {
         if (typeof arg === 'object') {

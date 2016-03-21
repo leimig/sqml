@@ -7,6 +7,7 @@ function Assembler() {
 
 Assembler.prototype.exec = function(descriptors) {
     var ret = [];
+    var _this = this;
 
     descriptors.forEach(function(descriptor) {
         var query = "INSERT INTO %table% (%columns%) VALUES %values%;";
@@ -29,17 +30,7 @@ Assembler.prototype.exec = function(descriptors) {
             var values = "(";
 
             descriptor.properties.forEach(function(property) {
-                if (typeof property.value === 'object') {
-                    values += Helper.get(property.value.name, property.value.args);
-
-                } else if (typeof property.value === 'string') {
-                    values += "'" + property.value + "'";
-
-                } else {
-                    values += property.value;
-                }
-
-                values += ", "
+                values += _this._resolveArgument(property.value) + ", ";
             });
 
             values = values.slice(0, -2) + "), ";
@@ -53,6 +44,33 @@ Assembler.prototype.exec = function(descriptors) {
     });
 
     return ret;
+};
+
+Assembler.prototype._resolveArgument = function(argument) {
+    if (typeof argument === 'object') {
+
+        // if it's a method we will call the helper class
+        if (argument.type === 'method') {
+            return Helper.get(argument.name, argument.args);
+
+        // if it's a query, than we will resolve its params
+        } else if (argument.type === 'query') {
+            var query = argument.query;
+
+            argument.args.forEach(function (arg) {
+                query = query.replace('%@', this._resolveArgument(arg));
+            }.bind(this));
+
+            return '(' + query + ')';
+        }
+
+    // if it's a string, we just need to wrap it in quotes
+    } else if (typeof argument === 'string') {
+        return "'" + argument + "'";
+
+    } else { // otherwise, just return the value
+        return argument;
+    }
 };
 
 module.exports = Assembler;

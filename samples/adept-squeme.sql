@@ -1,13 +1,12 @@
 CREATE TABLE User (
     id CHAR(32) PRIMARY KEY,
-    name VARCHAR(120),
-    age INT,
-    birthday DATE
+    firstname VARCHAR(120),
+    lastname VARCHAR(120),
+    age INT
 );
 
 CREATE TABLE Job (
     trackingNumber INT PRIMARY KEY,
     createdDate DATE,
-    endDate DATE,
-    startDate DATE
+    requester CHAR(32) REFERENCES User(id)
 );

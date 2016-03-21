@@ -23,6 +23,7 @@ try {
 
     console.log('Starting compilation...');
     var tokens      = new Lexer().exec(input);
+
     console.log('Assembling descriptors...');
     var descriptors = new Parser().exec(tokens);
 

@@ -1,112 +1,57 @@
 var Tokens = require('./tokens');
 
 // Parser definition
-function Parser() {
-
+function Parser(tokens) {
+    this.tokens = tokens;
+    this.pos = 0;
 }
 
 Parser.prototype.exec = function(tokens) {
     var ret = [];
-    var pos = 0;
+    this.pos = 0;
+    this.tokens = tokens;
 
-    next = function() {
-        return tokens[pos++];
-    }
-
-    peek = function() {
-        return tokens[pos];
-    }
-
-    validate = function(actual, expected) {
-        if(actual.type !== expected)
-            throwUnexpectedToken(token);
-    }
-
-    parseArgument = function(token, notNull) {
-        // Check if it's a method
-        if (token.type === Tokens.IDENTIFIER) {
-            return parseMethod(token);
-
-        // or if it's a data type
-        } else if (Tokens.isDataType(token.type)) {
-            return token.value;
-
-        } else { // otherwise, it's an error
-            if (notNull)
-                throwUnexpectedToken(token);
-        }
-    }
-
-    parseMethod = function(token) {
-        var method = { name: token.value, args: [] };
-
-        // Check for parens
-        validate(next(), Tokens.LPARENS);
-
-        while (peek().type !== Tokens.RPARENS) {
-            var arg = parseArgument(next())
-            // Ignores only undefined and nulls
-            if (arg !== null && arg !== void 0) {
-                method.args.push(arg);
-            }
-        }
-
-        // Check for parens
-        validate(next(), Tokens.RPARENS);
-
-        return method;
-    }
-
-    throwUnexpectedToken = function(token) {
-        if (token.value)
-            errorMessage = 'Unexpected token `' + token.value + '`';
-        else
-            errorMessage = 'Unexpected token of type ' + token.type;
-
-        throw Error(errorMessage + ' at ' + token.line + ':' + token.column);
-    }
-
-    while (pos < tokens.length) {
+    while (this.pos < this.tokens.length) {
         var descriptor = { properties: [] };
-        var token = next();
+        var token = this._next();
 
         // Check table name
         if (token.type === Tokens.IDENTIFIER) {
             descriptor.table = token.value;
 
             // Check for brackets
-            validate(token = next(), Tokens.LBRACKETS);
+            this._validate(token = this._next(), Tokens.LBRACKETS);
 
             while (true) {
-                if (peek().type === Tokens.RBRACKETS)
+                if (this._peek().type === Tokens.RBRACKETS)
                     break; // end of the properties
 
                 var property = {};
 
                 // Get property name
-                validate(token = next(), Tokens.IDENTIFIER);
+                this._validate(token = this._next(), Tokens.IDENTIFIER);
                 property.name = token.value;
 
                 // Check for colon
-                validate(token = next(), Tokens.COLON);
+                this._validate(token = this._next(), Tokens.COLON);
 
-                property.value = parseArgument(token = next(), true);
+                property.value = this._parseArgument(token = this._next(), true);
 
                 descriptor.properties.push(property);
 
-                if (peek().type === Tokens.COMMA)
-                    next(); // ignores commas
+                if (this._peek().type === Tokens.COMMA)
+                    this._next(); // ignores commas
             }
 
             // Check for brackets
-            validate(token = next(), Tokens.RBRACKETS);
+            this._validate(token = this._next(), Tokens.RBRACKETS);
 
             // Check for a quantity limit
-            if (peek().type === Tokens.TIMES) {
-                next(); // discart times symbol
+            if (this._peek().type === Tokens.TIMES) {
+                this._next(); // discart times symbol
 
                 // Check for brackets
-                validate(token = next(), Tokens.DIGIT);
+                this._validate(token = this._next(), Tokens.DIGIT);
 
                 descriptor.quantity = parseInt(token.value);
             } else {
@@ -115,16 +60,106 @@ Parser.prototype.exec = function(tokens) {
             }
 
             // Check for semicolon
-            validate(token = next(), Tokens.SEMICOLON);
+            this._validate(token = this._next(), Tokens.SEMICOLON);
 
             ret.push(descriptor);
             continue;
         }
 
-        throwUnexpectedToken(token);
+        this._throwUnexpectedToken(token);
     }
 
     return ret;
+};
+
+Parser.prototype._next = function() {
+    return this.tokens[this.pos++];
+}
+
+Parser.prototype._peek = function() {
+    return this.tokens[this.pos];
+}
+
+Parser.prototype._validate = function(actual, expected) {
+    if(actual.type !== expected)
+        this._throwUnexpectedToken(token);
+};
+
+Parser.prototype._parseArgument = function(token, notNull) {
+    // Check if it's a method
+    if (token.type === Tokens.IDENTIFIER) {
+        return this._parseMethod(token);
+
+    // Check if it's a query
+    } else if (token.type === Tokens.QUERY) {
+        return this._parseQuery(token);
+
+    // or if it's a data type
+    } else if (Tokens.isDataType(token.type)) {
+        return token.value;
+
+    } else { // otherwise, it's an error
+        if (notNull)
+            this._throwUnexpectedToken(token);
+    }
+}
+
+Parser.prototype._parseMethod = function(token) {
+    var method = {
+        type: 'method',
+        name: token.value,
+        args: []
+    };
+
+    // Check for parens
+    this._validate(this._next(), Tokens.LPARENS);
+
+    while (this._peek().type !== Tokens.RPARENS) {
+        var arg = this._parseArgument(this._next());
+
+        // Ignores only undefined and nulls
+        if (arg !== null && arg !== void 0) {
+            method.args.push(arg);
+        }
+    }
+
+    // Check for parens
+    this._validate(this._next(), Tokens.RPARENS);
+
+    return method;
+};
+
+Parser.prototype._parseQuery = function(token) {
+    var query = {
+        type: 'query',
+        query: token.value,
+        args: []
+    };
+
+    if (this._peek().type === Tokens.LSQUARE_BRACKETS) {
+        this._next(); // ignores left bracket
+
+        while (this._peek().type !== Tokens.RSQUARE_BRACKETS) {
+            var value = this._parseArgument(this._next());
+            query.args.push(value);
+
+            if (this._peek().type === Tokens.COMMA)
+                this._next(); // ignores comma
+        }
+
+        this._next(); // ignores right bracket
+    }
+
+    return query;
+};
+
+Parser.prototype._throwUnexpectedToken = function(token) {
+    if (token.value)
+        errorMessage = 'Unexpected token `' + token.value + '`';
+    else
+        errorMessage = 'Unexpected token of type ' + token.type;
+
+    throw Error(errorMessage + ' at ' + token.line + ':' + token.column);
 };
 
 module.exports = Parser;

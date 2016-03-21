@@ -63,7 +63,7 @@ Lexer.prototype.exec = function(source) {
             var delimiter = str;
             var content = "";
 
-            // Looks for all the characters inside de string
+            // Looks for all the characters inside the string
             while ((str = next()) !== delimiter) {
                 if (str === '\\') {
                     str += next();
@@ -71,13 +71,42 @@ Lexer.prototype.exec = function(source) {
 
                 content += str;
 
-                // Validates if there is an unfinished string
+                // Validates if it is an unfinished string
                 if (!str || /[\n\r]/i.test(content))
                     throw SyntaxError('Unfinished string at ' + line + ':' + column);
             }
 
             ret.push({
                 type: Tokens.STRING,
+                value: content,
+                line: line,
+                // subtracting the length and adding the quotes
+                // will mark the begining of the string
+                column: column - (content.length - 1 + 2 /* for the quotes*/)
+            });
+
+            continue;
+        }
+
+        // Check if it's a query
+        if (str === '`') {
+            var content = "";
+
+            // Looks for all the characters inside the query
+            while ((str = next()) !== '`') {
+                if (str === '\\') {
+                    str += next();
+                }
+
+                content += str;
+
+                // Validates if it is an unfinished query
+                if (!str || /[\n\r]/i.test(content))
+                    throw SyntaxError('Unfinished string at ' + line + ':' + column);
+            }
+
+            ret.push({
+                type: Tokens.QUERY,
                 value: content,
                 line: line,
                 // subtracting the length and adding the quotes

@@ -8,5 +8,9 @@ User {
 Job {
     trackingNumber: sequence('tn', 1),
     createdDate:    date(),
-    requester:      `select id from User where id = %@ AND (firstname = 'Higgor' OR age > %@)` [random(1,20), 20]
+    requester: `select id
+                from User
+                where id = %@ AND
+                (firstname = 'Higgor' OR age > %@)`
+                [random(1,20), 20]
 } * 10;

@@ -94,6 +94,12 @@ Lexer.prototype.exec = function(source) {
 
             // Looks for all the characters inside the query
             while ((str = next()) !== '`') {
+                if (str === '\n') { // handles multi-lined queries
+                    while (/[\t ]/i.test(str = next()));
+                    content += ' ' + str;
+                    continue;
+                }
+
                 if (str === '\\') {
                     str += next();
                 }
@@ -101,8 +107,7 @@ Lexer.prototype.exec = function(source) {
                 content += str;
 
                 // Validates if it is an unfinished query
-                if (!str || /[\n\r]/i.test(content))
-                    throw SyntaxError('Unfinished string at ' + line + ':' + column);
+                if (!str) throw SyntaxError('Unfinished string at ' + line + ':' + column);
             }
 
             ret.push({

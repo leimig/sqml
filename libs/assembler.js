@@ -56,6 +56,14 @@ Assembler.prototype._resolveArgument = function(argument) {
         // if it's a query, than we will resolve its params
         } else if (argument.type === 'query') {
             var query = argument.query;
+            var requiredParamsQuantity = (query.match(/%@/g) || []).length;
+
+            // Validates the amount of query arguments required vs. provided
+            if (requiredParamsQuantity !== argument.args.length) {
+                throw Error("Wrong number of query arguments, expected " +
+                    requiredParamsQuantity + " but found " + argument.args.length +
+                    ". For query:\n" + query);
+            }
 
             argument.args.forEach(function (arg) {
                 query = query.replace('%@', this._resolveArgument(arg));

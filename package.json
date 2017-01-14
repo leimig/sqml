@@ -24,5 +24,8 @@
   "dependencies": {
     "moment": "^2.12.0",
     "node-uuid": "^1.4.7"
+  },
+  "devDependencies": {
+    "jenkins-mocha": "^4.1.0"
   }
 }
